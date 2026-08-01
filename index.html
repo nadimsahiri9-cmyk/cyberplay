@@ -5,159 +5,270 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>CyberPlay — Apprends la cybersécurité en jouant</title>
   <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Orbitron:wght@400;700;900&display=swap" rel="stylesheet">
   <style>
-    @media print { .no-print { display: none !important; } }
-    .card-game { transition: all 0.2s ease; }
-    .card-game:hover { transform: translateY(-4px); box-shadow: 0 12px 30px rgba(99,102,241,0.25); }
+    * { font-family: 'Share Tech Mono', monospace; }
+    .title-font { font-family: 'Orbitron', sans-serif; }
+
+    body {
+      background: #0a0a0f;
+      background-image:
+        linear-gradient(rgba(0,255,247,0.03) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(0,255,247,0.03) 1px, transparent 1px);
+      background-size: 30px 30px;
+    }
+
+    /* CRT scan lines overlay */
+    body::after {
+      content: '';
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: repeating-linear-gradient(
+        0deg,
+        transparent,
+        transparent 2px,
+        rgba(0,0,0,0.08) 2px,
+        rgba(0,0,0,0.08) 4px
+      );
+      pointer-events: none;
+      z-index: 9999;
+    }
+
+    .glow-cyan { box-shadow: 0 0 15px rgba(0,255,247,0.3), 0 0 40px rgba(0,255,247,0.1); }
+    .glow-green { box-shadow: 0 0 15px rgba(0,255,65,0.3), 0 0 40px rgba(0,255,65,0.1); }
+    .glow-magenta { box-shadow: 0 0 15px rgba(255,0,170,0.3), 0 0 40px rgba(255,0,170,0.1); }
+    .glow-cyan-sm { box-shadow: 0 0 8px rgba(0,255,247,0.25); }
+    .glow-green-sm { box-shadow: 0 0 8px rgba(0,255,65,0.25); }
+
+    .card-game {
+      transition: all 0.2s ease;
+      border: 1px solid rgba(0,255,247,0.2);
+    }
+    .card-game:hover {
+      transform: translateY(-6px) scale(1.02);
+      border-color: rgba(0,255,247,0.6);
+      box-shadow: 0 0 20px rgba(0,255,247,0.2), 0 0 60px rgba(0,255,247,0.08);
+    }
     .card-game:active { transform: scale(0.97); }
+
     .fade-in { animation: fadeIn 0.3s ease-out; }
-    @keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } }
     .slide-in { animation: slideIn 0.25s ease-out; }
     @keyframes slideIn { from { opacity: 0; transform: translateX(20px); } }
+
+    .btn-neon {
+      transition: all 0.15s ease;
+      text-shadow: 0 0 8px currentColor;
+    }
+    .btn-neon:active { transform: scale(0.95); }
+
+    .btn-depart-neon {
+      background: linear-gradient(135deg, #00ff41, #00cc33);
+      box-shadow: 0 0 20px rgba(0,255,65,0.3);
+      color: #000;
+      font-weight: 700;
+    }
+    .btn-depart-neon:hover { box-shadow: 0 0 30px rgba(0,255,65,0.5); }
+
+    .nav-btn {
+      border: 1px solid transparent;
+      transition: all 0.15s ease;
+    }
+    .nav-btn:hover { border-color: rgba(0,255,247,0.4); }
+    .nav-btn.active {
+      background: rgba(0,255,247,0.1);
+      border-color: #00fff7;
+      color: #00fff7;
+      box-shadow: 0 0 10px rgba(0,255,247,0.15);
+    }
+
+    .border-cyan { border-color: rgba(0,255,247,0.3); }
+    .border-cyan:hover { border-color: rgba(0,255,247,0.6); }
+    .text-cyan { color: #00fff7; }
+    .bg-cyan-glow { background: rgba(0,255,247,0.08); }
+
+    .glow-text-cyan { text-shadow: 0 0 10px rgba(0,255,247,0.5); }
+    .glow-text-green { text-shadow: 0 0 10px rgba(0,255,65,0.5); }
+    .glow-text-magenta { text-shadow: 0 0 10px rgba(255,0,170,0.5); }
+
+    .pulse-border {
+      animation: pulseBorder 2s ease-in-out infinite;
+    }
+    @keyframes pulseBorder {
+      0%, 100% { border-color: rgba(0,255,247,0.2); }
+      50% { border-color: rgba(0,255,247,0.6); }
+    }
+
+    /* Typing cursor effect for sections */
+    .cursor-blink::after {
+      content: '▋';
+      animation: blink 1s step-end infinite;
+      color: #00fff7;
+    }
+    @keyframes blink { 50% { opacity: 0; } }
+
     ::-webkit-scrollbar { width: 8px; }
-    ::-webkit-scrollbar-track { background: #1f2937; }
-    ::-webkit-scrollbar-thumb { background: #4b5563; border-radius: 4px; }
-    ::-webkit-scrollbar-thumb:hover { background: #6b7280; }
+    ::-webkit-scrollbar-track { background: #0a0a0f; }
+    ::-webkit-scrollbar-thumb { background: #00fff7; border-radius: 4px; }
+    ::-webkit-scrollbar-thumb:hover { background: #00ccbb; }
+
+    /* Retro scan for tables */
+    .table-retro thead th {
+      background: rgba(0,255,247,0.06);
+      color: #00fff7;
+      font-family: 'Orbitron', sans-serif;
+      font-size: 0.65rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      border-bottom: 1px solid rgba(0,255,247,0.2);
+    }
+
+    .game-btn {
+      border: 1px solid rgba(0,255,247,0.3);
+      background: rgba(0,255,247,0.04);
+      transition: all 0.15s ease;
+    }
+    .game-btn:hover {
+      border-color: #00fff7;
+      background: rgba(0,255,247,0.1);
+      box-shadow: 0 0 12px rgba(0,255,247,0.15);
+    }
+
+    .card-bg {
+      background: rgba(10,10,15,0.85);
+      backdrop-filter: blur(4px);
+      border: 1px solid rgba(0,255,247,0.15);
+    }
+
+    input, textarea, select {
+      background: rgba(0,0,0,0.5) !important;
+      border-color: rgba(0,255,247,0.2) !important;
+      color: #00fff7 !important;
+    }
+    input:focus, textarea:focus, select:focus {
+      border-color: #00fff7 !important;
+      box-shadow: 0 0 10px rgba(0,255,247,0.15) !important;
+    }
+    input::placeholder, textarea::placeholder { color: rgba(0,255,247,0.3) !important; }
   </style>
 </head>
-<body class="bg-gray-950 text-gray-100 font-sans antialiased min-h-screen flex flex-col">
+<body class="text-gray-100 antialiased min-h-screen flex flex-col">
 
-  <div class="max-w-4xl mx-auto px-4 sm:px-6 py-6 sm:py-10 w-full flex flex-col flex-1">
+  <div class="max-w-4xl mx-auto px-4 sm:px-6 py-6 sm:py-10 w-full flex flex-col flex-1 relative" style="z-index:1">
 
     <!-- Header -->
     <header class="text-center mb-8">
-      <h1 class="text-3xl sm:text-4xl font-extrabold text-gray-100 tracking-tight">
-        🛡️ CyberPlay
+      <h1 class="title-font text-3xl sm:text-4xl font-black tracking-widest text-cyan glow-text-cyan">
+        █ CYBERPLAY
       </h1>
-      <p class="text-gray-400 mt-1 text-sm">Apprends la cybersécurité en jouant</p>
+      <p class="text-gray-500 mt-1 text-sm tracking-widest uppercase">Apprends la cybersécurité en jouant</p>
     </header>
 
     <!-- Navigation tabs -->
     <div id="navBar" class="flex flex-wrap gap-2 justify-center mb-8 no-print">
-      <button data-page="home" class="nav-btn px-5 py-2 rounded-xl text-sm font-semibold transition-all
-              bg-indigo-600 text-white shadow">🏠 Accueil</button>
-      <button data-page="quiz" class="nav-btn px-5 py-2 rounded-xl text-sm font-semibold transition-all
-              bg-gray-700 text-gray-300 hover:bg-gray-600">⚡ Quiz Flash</button>
-      <button data-page="phish" class="nav-btn px-5 py-2 rounded-xl text-sm font-semibold transition-all
-              bg-gray-700 text-gray-300 hover:bg-gray-600">🎣 Phish or Not</button>
-      <button data-page="password" class="nav-btn px-5 py-2 rounded-xl text-sm font-semibold transition-all
-              bg-gray-700 text-gray-300 hover:bg-gray-600">🔐 Password Hero</button>
+      <button data-page="home" class="nav-btn active px-5 py-2 rounded-xl text-sm font-semibold transition-all text-cyan border-cyan bg-cyan-glow glow-cyan-sm">🏠 Accueil</button>
+      <button data-page="quiz" class="nav-btn px-5 py-2 rounded-xl text-sm font-semibold transition-all text-gray-400 border-gray-700 hover:text-cyan">⚡ Quiz Flash</button>
+      <button data-page="phish" class="nav-btn px-5 py-2 rounded-xl text-sm font-semibold transition-all text-gray-400 border-gray-700 hover:text-cyan">🎣 Phish or Not</button>
+      <button data-page="password" class="nav-btn px-5 py-2 rounded-xl text-sm font-semibold transition-all text-gray-400 border-gray-700 hover:text-cyan">🔐 Password Hero</button>
     </div>
 
     <!-- ============ PAGE ACCUEIL ============ -->
     <div id="page-home" class="page fade-in">
       <div class="grid grid-cols-1 sm:grid-cols-3 gap-5">
-        <!-- Carte Quiz Flash -->
-        <div class="card-game bg-gray-800 border border-gray-700 rounded-2xl p-6 text-center cursor-pointer"
-             onclick="navigate('quiz')">
-          <div class="text-5xl mb-4">⚡</div>
-          <h2 class="text-lg font-bold text-gray-100 mb-2">Quiz Flash</h2>
-          <p class="text-gray-400 text-sm mb-4">Questions chronométrées à choix multiples. Gagne des points en répondant vite et bien.</p>
-          <span class="inline-block px-4 py-1.5 rounded-lg bg-indigo-600/20 text-indigo-300 text-xs font-semibold">10 questions</span>
+        <div class="card-game card-bg rounded-2xl p-6 text-center cursor-pointer" onclick="navigate('quiz')">
+          <div class="text-5xl mb-4 glow-text-cyan">⚡</div>
+          <h2 class="title-font text-sm font-bold text-cyan tracking-wider mb-3">QUIZ FLASH</h2>
+          <p class="text-gray-500 text-xs mb-4 leading-relaxed">Questions chronométrées à choix multiples. Gagne des points en répondant vite et bien.</p>
+          <span class="inline-block px-4 py-1.5 rounded-lg border border-cyan/30 text-cyan text-[10px] font-bold tracking-wider">10 QUESTIONS</span>
         </div>
-
-        <!-- Carte Phish or Not -->
-        <div class="card-game bg-gray-800 border border-gray-700 rounded-2xl p-6 text-center cursor-pointer"
-             onclick="navigate('phish')">
-          <div class="text-5xl mb-4">🎣</div>
-          <h2 class="text-lg font-bold text-gray-100 mb-2">Phish or Not</h2>
-          <p class="text-gray-400 text-sm mb-4">Repère les emails et sites de phishing. Un vrai réflexe à développer.</p>
-          <span class="inline-block px-4 py-1.5 rounded-lg bg-indigo-600/20 text-indigo-300 text-xs font-semibold">8 scénarios</span>
+        <div class="card-game card-bg rounded-2xl p-6 text-center cursor-pointer" onclick="navigate('phish')">
+          <div class="text-5xl mb-4 glow-text-green">🎣</div>
+          <h2 class="title-font text-sm font-bold text-green-400 tracking-wider mb-3">PHISH OR NOT</h2>
+          <p class="text-gray-500 text-xs mb-4 leading-relaxed">Repère les emails et sites de phishing. Un vrai réflexe à développer.</p>
+          <span class="inline-block px-4 py-1.5 rounded-lg border border-green-400/30 text-green-400 text-[10px] font-bold tracking-wider">8 SCÉNARIOS</span>
         </div>
-
-        <!-- Carte Password Hero -->
-        <div class="card-game bg-gray-800 border border-gray-700 rounded-2xl p-6 text-center cursor-pointer"
-             onclick="navigate('password')">
-          <div class="text-5xl mb-4">🔐</div>
-          <h2 class="text-lg font-bold text-gray-100 mb-2">Password Hero</h2>
-          <p class="text-gray-400 text-sm mb-4">Teste la force de tes mots de passe et apprends à les sécuriser.</p>
-          <span class="inline-block px-4 py-1.5 rounded-lg bg-indigo-600/20 text-indigo-300 text-xs font-semibold">Interactif</span>
+        <div class="card-game card-bg rounded-2xl p-6 text-center cursor-pointer" onclick="navigate('password')">
+          <div class="text-5xl mb-4 glow-text-magenta">🔐</div>
+          <h2 class="title-font text-sm font-bold text-pink-400 tracking-wider mb-3">PASSWORD HERO</h2>
+          <p class="text-gray-500 text-xs mb-4 leading-relaxed">Teste la force de tes mots de passe et apprends à les sécuriser.</p>
+          <span class="inline-block px-4 py-1.5 rounded-lg border border-pink-400/30 text-pink-400 text-[10px] font-bold tracking-wider">INTERACTIF</span>
         </div>
       </div>
 
-      <!-- Score global -->
-      <div id="syncStatus" class="text-center text-xs text-gray-500 hidden mb-2"></div>
-      <div class="mt-8 text-center text-gray-500 text-xs">
-        <p>🎯 Score global : <span id="globalScore" class="text-indigo-300 font-semibold">0</span> points  <button id="btnSync" class="ml-2 px-3 py-1 rounded-lg bg-indigo-700 hover:bg-indigo-600 text-xs text-white font-medium transition-all">📤 Sync</button></p>
+      <div class="mt-8 text-center">
+        <p class="text-gray-600 text-xs tracking-wider">
+          SCORE GLOBAL : <span id="globalScore" class="text-cyan font-bold glow-text-cyan">0</span> POINTS
+          <button id="btnSync" class="ml-3 px-4 py-1.5 rounded-lg border border-cyan/30 text-cyan text-xs hover:bg-cyan-glow transition-all tracking-wider">📤 SYNC</button>
+        </p>
+        <div id="syncStatus" class="text-center text-xs text-gray-600 hidden mt-2"></div>
       </div>
     </div>
 
     <!-- ============ PAGE QUIZ ============ -->
     <div id="page-quiz" class="page hidden slide-in">
-      <div class="bg-gray-800 border border-gray-700 rounded-2xl p-6 sm:p-8">
-        <div class="flex items-center justify-between mb-6">
-          <h2 class="text-xl font-bold text-gray-100">⚡ Quiz Flash</h2>
-          <span class="text-sm text-gray-400">Question <span id="quizCurrent">0</span>/<span id="quizTotal">0</span></span>
+      <div class="card-bg rounded-2xl p-6 sm:p-8">
+        <div class="flex items-center justify-between mb-6 border-b border-cyan/10 pb-4">
+          <h2 class="title-font text-sm font-bold text-cyan tracking-wider">⚡ QUIZ FLASH</h2>
+          <span class="text-xs text-cyan/60">QUESTION <span id="quizCurrent" class="text-cyan font-bold">0</span>/<span id="quizTotal" class="text-cyan font-bold">0</span></span>
         </div>
-        <!-- Timer bar -->
-        <div class="w-full h-2 bg-gray-700 rounded-full mb-6 overflow-hidden">
-          <div id="quizTimer" class="h-full bg-indigo-500 rounded-full transition-all duration-300" style="width:100%"></div>
+        <div class="w-full h-1.5 bg-gray-900 rounded-full mb-6 overflow-hidden border border-cyan/20">
+          <div id="quizTimer" class="h-full bg-cyan rounded-full transition-all duration-300 glow-cyan-sm" style="width:100%"></div>
         </div>
-        <!-- Question -->
-        <p id="quizQuestion" class="text-lg text-gray-100 mb-6 font-medium min-h-[3rem]"></p>
-        <!-- Answers -->
+        <p id="quizQuestion" class="text-base sm:text-lg text-cyan/90 mb-6 font-medium min-h-[3rem] leading-relaxed">Chargement...</p>
         <div id="quizAnswers" class="space-y-3"></div>
-        <!-- Feedback -->
-        <div id="quizFeedback" class="hidden mt-4 p-4 rounded-xl text-sm font-medium"></div>
-        <!-- Next button -->
-        <button id="quizNext" class="hidden mt-6 w-full py-3 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white font-semibold transition-all">
-          Question suivante →
+        <div id="quizFeedback" class="hidden mt-4 p-4 rounded-xl text-sm font-medium border"></div>
+        <button id="quizNext" class="hidden mt-6 w-full py-3 rounded-xl bg-cyan/10 border border-cyan/40 text-cyan font-bold tracking-wider text-sm hover:bg-cyan/20 transition-all glow-cyan-sm">
+          QUESTION SUIVANTE →
         </button>
       </div>
     </div>
 
     <!-- ============ PAGE PHISH OR NOT ============ -->
     <div id="page-phish" class="page hidden slide-in">
-      <div class="bg-gray-800 border border-gray-700 rounded-2xl p-6 sm:p-8">
-        <div class="flex items-center justify-between mb-6">
-          <h2 class="text-xl font-bold text-gray-100">🎣 Phish or Not</h2>
-          <span class="text-sm text-gray-400">Scénario <span id="phishCurrent">0</span>/<span id="phishTotal">0</span></span>
+      <div class="card-bg rounded-2xl p-6 sm:p-8">
+        <div class="flex items-center justify-between mb-6 border-b border-green-400/10 pb-4">
+          <h2 class="title-font text-sm font-bold text-green-400 tracking-wider">🎣 PHISH OR NOT</h2>
+          <span class="text-xs text-green-400/60">SCÉNARIO <span id="phishCurrent" class="text-green-400 font-bold">0</span>/<span id="phishTotal" class="text-green-400 font-bold">0</span></span>
         </div>
-        <!-- Email preview -->
-        <div id="phishEmail" class="bg-gray-700/50 border border-gray-600 rounded-xl p-4 mb-6 text-sm leading-relaxed"></div>
-        <!-- Buttons -->
+        <div id="phishEmail" class="bg-black/50 border border-green-400/20 rounded-xl p-4 mb-6 text-sm leading-relaxed text-gray-400"></div>
         <div id="phishButtons" class="flex gap-3">
-          <button data-phish="phishing" class="flex-1 py-4 rounded-xl bg-red-700 hover:bg-red-600 text-white font-bold text-lg transition-all">🎣 Phishing</button>
-          <button data-phish="legit" class="flex-1 py-4 rounded-xl bg-emerald-700 hover:bg-emerald-600 text-white font-bold text-lg transition-all">✅ Légitime</button>
+          <button data-phish="phishing" class="flex-1 py-4 rounded-xl border border-red-500/40 text-red-400 font-bold text-lg tracking-wider hover:bg-red-900/20 transition-all">🎣 PHISHING</button>
+          <button data-phish="legit" class="flex-1 py-4 rounded-xl border border-green-400/40 text-green-400 font-bold text-lg tracking-wider hover:bg-green-900/20 transition-all">✅ LÉGITIME</button>
         </div>
-        <!-- Feedback -->
-        <div id="phishFeedback" class="hidden mt-4 p-4 rounded-xl text-sm font-medium"></div>
-        <!-- Next -->
-        <button id="phishNext" class="hidden mt-6 w-full py-3 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white font-semibold transition-all">
-          Scénario suivant →
+        <div id="phishFeedback" class="hidden mt-4 p-4 rounded-xl text-sm font-medium border"></div>
+        <button id="phishNext" class="hidden mt-6 w-full py-3 rounded-xl bg-green-400/10 border border-green-400/40 text-green-400 font-bold tracking-wider text-sm hover:bg-green-400/20 transition-all glow-green-sm">
+          SCÉNARIO SUIVANT →
         </button>
       </div>
     </div>
 
     <!-- ============ PAGE PASSWORD HERO ============ -->
     <div id="page-password" class="page hidden slide-in">
-      <div class="bg-gray-800 border border-gray-700 rounded-2xl p-6 sm:p-8">
-        <h2 class="text-xl font-bold text-gray-100 mb-6">🔐 Password Hero</h2>
-        <p class="text-gray-400 text-sm mb-4">Tape un mot de passe pour voir sa force.</p>
+      <div class="card-bg rounded-2xl p-6 sm:p-8">
+        <h2 class="title-font text-sm font-bold text-pink-400 tracking-wider mb-6">🔐 PASSWORD HERO</h2>
+        <p class="text-gray-500 text-xs mb-4 tracking-wider">TAPE UN MOT DE PASSE POUR ANALYSER SA FORCE</p>
         <input type="text" id="passwordInput"
-               class="w-full px-4 py-3 bg-gray-700 border border-gray-600 rounded-xl text-lg text-gray-100 font-mono
-                      focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/30 outline-none transition-all"
-               placeholder="Tape un mot de passe..." autocomplete="off">
-        <!-- Strength bar -->
-        <div class="mt-6 w-full h-4 bg-gray-700 rounded-full overflow-hidden">
-          <div id="passwordBar" class="h-full rounded-full transition-all duration-300" style="width:0%;background:#4b5563"></div>
+               class="w-full px-4 py-3 rounded-xl text-base font-mono tracking-widest border bg-black/50 placeholder:text-gray-700"
+               placeholder="MOT DE PASSE..." autocomplete="off">
+        <div class="mt-6 w-full h-3 bg-gray-900 rounded-full overflow-hidden border border-pink-400/20">
+          <div id="passwordBar" class="h-full rounded-full transition-all duration-300" style="width:0%;background:#333"></div>
         </div>
-        <div class="flex justify-between mt-2 text-xs text-gray-500">
-          <span>Faible</span><span>Moyen</span><span>Fort</span>
+        <div class="flex justify-between mt-1.5 text-[10px] text-gray-700 tracking-wider">
+          <span>FAIBLE</span><span>MOYEN</span><span>FORT</span>
         </div>
-        <!-- Feedback -->
-        <div id="passwordFeedback" class="mt-4 p-4 rounded-xl text-sm font-medium hidden"></div>
-        <!-- Tips -->
-        <div id="passwordTips" class="mt-4 text-xs text-gray-500 space-y-1 hidden">
-          <p>💡 Astuces :</p>
-          <ul id="passwordTipsList" class="list-disc list-inside"></ul>
+        <div id="passwordFeedback" class="mt-4 p-4 rounded-xl text-sm font-medium border hidden"></div>
+        <div id="passwordTips" class="mt-4 text-xs text-gray-600 space-y-1 hidden">
+          <p class="text-cyan/60 tracking-wider">💡 ASTUCES :</p>
+          <ul id="passwordTipsList" class="list-disc list-inside text-gray-600"></ul>
         </div>
       </div>
     </div>
 
     <!-- Footer -->
-    <footer class="mt-auto pt-8 text-center text-xs text-gray-600 border-t border-gray-800">
-      CyberPlay — Nadim &nbsp;·&nbsp; Données stockées localement
+    <footer class="mt-auto pt-8 text-center">
+      <p class="text-[10px] text-gray-800 tracking-widest border-t border-gray-900 pt-4">
+        CYBERPLAY — NADIM · DONNÉES STOCKÉES LOCALEMENT
+      </p>
     </footer>
   </div>
 
@@ -174,26 +285,26 @@
         const target = document.getElementById('page-' + pageId);
         if (target) target.classList.remove('hidden');
         navBtns.forEach(b => {
-          b.classList.remove('bg-indigo-600', 'text-white');
-          b.classList.add('bg-gray-700', 'text-gray-300');
+          b.classList.remove('active', 'text-cyan', 'border-cyan', 'bg-cyan-glow');
+          b.classList.add('text-gray-400', 'border-gray-700');
           if (b.dataset.page === pageId) {
-            b.classList.remove('bg-gray-700', 'text-gray-300');
-            b.classList.add('bg-indigo-600', 'text-white');
+            b.classList.remove('text-gray-400', 'border-gray-700');
+            b.classList.add('active', 'text-cyan', 'border-cyan', 'bg-cyan-glow');
           }
         });
+        if (pageId === 'quiz') startQuiz();
+        if (pageId === 'phish') startPhish();
       };
 
       // ---- Data ----
       const STORAGE_KEY = 'cyberplay_scores';
 
-      // ---- Quiz data (placeholder) ----
       const quizData = [
         { q: "Qu'est-ce qu'un phishing ?", a: ["Un type de virus", "Une tentative de vol de données par email frauduleux", "Un pare-feu", "Un mot de passe"], correct: 1 },
         { q: "Que signifie HTTPS ?", a: ["Hyper Text Transfer Protocol Secure", "High Tech Protocol System", "Home Transfer Protocol Service", "Hyper Text Terminal System"], correct: 0 },
         { q: "Quel est le meilleur moyen de protéger un compte ?", a: ["Un mot de passe simple", "L'authentification à deux facteurs (2FA)", "Ne jamais se connecter", "Utiliser le même mot de passe partout"], correct: 1 },
       ];
 
-      // ---- Phish data (placeholder) ----
       const phishData = [
         { sujet: "Votre compte bancaire est bloqué", from: "banque-securite@secure-login.xyz", corps: "Cher client, veuillez cliquer ici pour débloquer votre compte sous 24h.", isPhishing: true, explication: "L'expéditeur est suspect (secure-login.xyz au lieu du vrai domaine bancaire). Les banques ne demandent jamais de cliquer sur un lien par email." },
         { sujet: "Facture mars 2026", from: "factures@votre-fournisseur.com", corps: "Votre facture du mois de mars est disponible en pièce jointe.", isPhishing: false, explication: "L'expéditeur semble légitime et le message est standard. Vérifie toujours le domaine avant d'ouvrir une pièce jointe." },
@@ -201,7 +312,7 @@
 
       // ---- Password scoring ----
       function scorePassword(pwd) {
-        if (!pwd) return { score: 0, label: '', color: '#4b5563', tips: [] };
+        if (!pwd) return { score: 0, label: '', color: '#333', tips: [] };
         let s = 0;
         const tips = [];
         if (pwd.length >= 8) s += 25; else tips.push('Au moins 8 caractères');
@@ -211,13 +322,11 @@
         if (/[0-9]/.test(pwd)) s += 15; else tips.push('Ajoute des chiffres');
         if (/[^a-zA-Z0-9]/.test(pwd)) s += 20; else tips.push('Ajoute des caractères spéciaux');
         if (s > 100) s = 100;
-
         let label, color;
-        if (s < 40)      { label = 'Faible';   color = '#ef4444'; }
-        else if (s < 70) { label = 'Moyen';    color = '#f59e0b'; }
-        else if (s < 90) { label = 'Fort';     color = '#22c55e'; }
-        else              { label = 'Très fort'; color = '#06b6d4'; }
-
+        if (s < 40)      { label = 'FAIBLE';    color = '#ff3355'; }
+        else if (s < 70) { label = 'MOYEN';     color = '#ff9900'; }
+        else if (s < 90) { label = 'FORT';      color = '#00ff41'; }
+        else              { label = 'TRÈS FORT'; color = '#00fff7'; }
         return { score: s, label, color, tips };
       }
 
@@ -249,37 +358,31 @@
 
       function showQuizQuestion() {
         if (quizIndex >= quizData.length) {
-          // Fin du quiz
           const s = loadScores();
           s.quiz += quizScore;
           s.points = (s.quiz || 0) + (s.phish || 0);
           saveScores(s);
-          document.getElementById('btnSync').addEventListener('click', syncScores);
-      updateGlobalScore();
-          document.getElementById('quizQuestion').textContent = '✅ Quiz terminé ! Score : ' + quizScore + '/' + quizData.length;
+          updateGlobalScore();
+          document.getElementById('quizQuestion').innerHTML = '✅ QUIZ TERMINÉ — SCORE : ' + quizScore + '/' + quizData.length;
           document.getElementById('quizAnswers').innerHTML = '';
           document.getElementById('quizFeedback').classList.add('hidden');
           document.getElementById('quizNext').classList.add('hidden');
           document.getElementById('quizTimer').style.width = '100%';
           return;
         }
-
         const q = quizData[quizIndex];
         document.getElementById('quizCurrent').textContent = quizIndex + 1;
         document.getElementById('quizTotal').textContent = quizData.length;
         document.getElementById('quizQuestion').textContent = q.q;
-
         let html = '';
         q.a.forEach((ans, i) => {
-          html += `<button data-qi="${i}" class="quiz-ans w-full text-left px-4 py-3 rounded-xl border border-gray-600 bg-gray-700/50 hover:bg-gray-600 hover:border-indigo-500 transition-all text-gray-200 font-medium">${ans}</button>`;
+          html += `<button data-qi="${i}" class="quiz-ans game-btn w-full text-left px-4 py-3 rounded-xl text-sm text-gray-300 font-medium">${ans}</button>`;
         });
         document.getElementById('quizAnswers').innerHTML = html;
         document.getElementById('quizFeedback').classList.add('hidden');
         document.getElementById('quizNext').classList.add('hidden');
         document.getElementById('quizTimer').style.width = '100%';
         quizAnswered = false;
-
-        // Timer
         let timeLeft = 100;
         if (quizTimerInterval) clearInterval(quizTimerInterval);
         quizTimerInterval = setInterval(() => {
@@ -287,21 +390,15 @@
           document.getElementById('quizTimer').style.width = Math.max(0, timeLeft) + '%';
           if (timeLeft <= 0) {
             clearInterval(quizTimerInterval);
-            if (!quizAnswered) {
-              quizAnswered = true;
-              showQuizFeedback(-1);
-            }
+            if (!quizAnswered) { quizAnswered = true; showQuizFeedback(-1); }
           }
         }, 300);
-
-        // Attach listeners
         document.querySelectorAll('.quiz-ans').forEach(btn => {
           btn.addEventListener('click', function() {
             if (quizAnswered) return;
             quizAnswered = true;
             clearInterval(quizTimerInterval);
-            const selected = parseInt(this.dataset.qi, 10);
-            showQuizFeedback(selected);
+            showQuizFeedback(parseInt(this.dataset.qi, 10));
           });
         });
       }
@@ -311,38 +408,32 @@
         const fb = document.getElementById('quizFeedback');
         fb.classList.remove('hidden');
         document.querySelectorAll('.quiz-ans').forEach((btn, i) => {
-          btn.classList.remove('hover:bg-gray-600', 'hover:border-indigo-500');
           btn.style.cursor = 'default';
           if (i === q.correct) {
-            btn.classList.add('border-emerald-500', 'bg-emerald-900/30');
+            btn.className = 'quiz-ans w-full text-left px-4 py-3 rounded-xl text-sm border border-green-400/50 bg-green-900/20 text-green-400 font-medium';
           } else if (i === selected && selected !== q.correct) {
-            btn.classList.add('border-red-500', 'bg-red-900/30');
+            btn.className = 'quiz-ans w-full text-left px-4 py-3 rounded-xl text-sm border border-red-500/50 bg-red-900/20 text-red-400 font-medium';
           }
         });
-
         if (selected === q.correct) {
-          fb.className = 'mt-4 p-4 rounded-xl text-sm font-medium bg-emerald-900/30 text-emerald-300 border border-emerald-700/50';
-          fb.textContent = '✅ Correct !';
+          fb.className = 'mt-4 p-4 rounded-xl text-sm font-medium border border-green-400/30 bg-green-900/10 text-green-400';
+          fb.textContent = '✅ CORRECT !';
           quizScore++;
         } else if (selected === -1) {
-          fb.className = 'mt-4 p-4 rounded-xl text-sm font-medium bg-amber-900/30 text-amber-300 border border-amber-700/50';
-          fb.textContent = '⏰ Temps écoulé !';
+          fb.className = 'mt-4 p-4 rounded-xl text-sm font-medium border border-amber-400/30 bg-amber-900/10 text-amber-400';
+          fb.textContent = '⏰ TEMPS ÉCOULÉ !';
         } else {
-          fb.className = 'mt-4 p-4 rounded-xl text-sm font-medium bg-red-900/30 text-red-300 border border-red-700/50';
-          fb.textContent = '❌ Faux !';
+          fb.className = 'mt-4 p-4 rounded-xl text-sm font-medium border border-red-500/30 bg-red-900/10 text-red-400';
+          fb.textContent = '❌ FAUX !';
         }
-
         document.getElementById('quizNext').classList.remove('hidden');
-        document.getElementById('quizNext').onclick = () => {
-          quizIndex++;
-          showQuizQuestion();
-        };
+        document.getElementById('quizNext').onclick = () => { quizIndex++; showQuizQuestion(); };
       }
 
       // ---- Phish logic ----
       let phishIndex = 0;
-      let phishAnswered = false;
       let phishScore = 0;
+      let phishAnswered = false;
 
       function startPhish() {
         phishIndex = 0;
@@ -357,30 +448,25 @@
           s.phish += phishScore;
           s.points = (s.quiz || 0) + (s.phish || 0);
           saveScores(s);
-          document.getElementById('btnSync').addEventListener('click', syncScores);
-      updateGlobalScore();
-          document.getElementById('phishEmail').innerHTML = '✅ Mission terminée ! Score : ' + phishScore + '/' + phishData.length;
+          updateGlobalScore();
+          document.getElementById('phishEmail').innerHTML = '✅ MISSION TERMINÉE — SCORE : ' + phishScore + '/' + phishData.length;
           document.getElementById('phishButtons').classList.add('hidden');
           document.getElementById('phishFeedback').classList.add('hidden');
           document.getElementById('phishNext').classList.add('hidden');
           return;
         }
-
         const p = phishData[phishIndex];
         document.getElementById('phishCurrent').textContent = phishIndex + 1;
         document.getElementById('phishTotal').textContent = phishData.length;
         document.getElementById('phishEmail').innerHTML =
-          `<div class="border-b border-gray-600 pb-2 mb-3 text-xs text-gray-500">
-            <p><strong>De :</strong> ${p.from}</p>
-            <p><strong>Sujet :</strong> ${p.sujet}</p>
+          `<div class="border-b border-green-400/10 pb-2 mb-3 text-xs text-gray-600">
+            <p><strong class="text-gray-500">DE :</strong> ${p.from}</p>
+            <p><strong class="text-gray-500">SUJET :</strong> ${p.sujet}</p>
           </div>
-          <p>${p.corps}</p>`;
+          <p class="text-gray-400">${p.corps}</p>`;
         document.getElementById('phishFeedback').classList.add('hidden');
         document.getElementById('phishNext').classList.add('hidden');
-        document.querySelectorAll('#phishButtons button').forEach(b => {
-          b.disabled = false;
-          b.style.opacity = '1';
-        });
+        document.querySelectorAll('#phishButtons button').forEach(b => { b.disabled = false; b.style.opacity = '1'; });
         phishAnswered = false;
       }
 
@@ -393,22 +479,17 @@
           const correct = guess === p.isPhishing;
           const fb = document.getElementById('phishFeedback');
           fb.classList.remove('hidden');
-
           if (correct) {
-            fb.className = 'mt-4 p-4 rounded-xl text-sm font-medium bg-emerald-900/30 text-emerald-300 border border-emerald-700/50';
-            fb.textContent = '✅ Correct ! ' + p.explication;
+            fb.className = 'mt-4 p-4 rounded-xl text-sm font-medium border border-green-400/30 bg-green-900/10 text-green-400';
+            fb.textContent = '✅ CORRECT ! ' + p.explication;
             phishScore++;
           } else {
-            fb.className = 'mt-4 p-4 rounded-xl text-sm font-medium bg-red-900/30 text-red-300 border border-red-700/50';
-            fb.textContent = '❌ Faux ! ' + p.explication;
+            fb.className = 'mt-4 p-4 rounded-xl text-sm font-medium border border-red-500/30 bg-red-900/10 text-red-400';
+            fb.textContent = '❌ FAUX ! ' + p.explication;
           }
-
-          document.querySelectorAll('#phishButtons button').forEach(b => { b.disabled = true; b.style.opacity = '0.5'; });
+          document.querySelectorAll('#phishButtons button').forEach(b => { b.disabled = true; b.style.opacity = '0.4'; });
           document.getElementById('phishNext').classList.remove('hidden');
-          document.getElementById('phishNext').onclick = () => {
-            phishIndex++;
-            showPhishScenario();
-          };
+          document.getElementById('phishNext').onclick = () => { phishIndex++; showPhishScenario(); };
         });
       });
 
@@ -420,25 +501,13 @@
         document.getElementById('passwordBar').style.background = result.color;
         const fb = document.getElementById('passwordFeedback');
         fb.classList.remove('hidden');
+        if (!pwd) { fb.classList.add('hidden'); document.getElementById('passwordTips').classList.add('hidden'); return; }
+        fb.textContent = 'FORCE : ' + result.label + ' (' + result.score + '%)';
         fb.className = 'mt-4 p-4 rounded-xl text-sm font-medium border';
-
-        if (!pwd) {
-          fb.classList.add('hidden');
-          document.getElementById('passwordTips').classList.add('hidden');
-          return;
-        }
-
-        fb.textContent = 'Force : ' + result.label + ' (' + result.score + '%)';
-        if (result.score < 40) {
-          fb.className += ' bg-red-900/30 text-red-300 border-red-700/50';
-        } else if (result.score < 70) {
-          fb.className += ' bg-amber-900/30 text-amber-300 border-amber-700/50';
-        } else if (result.score < 90) {
-          fb.className += ' bg-emerald-900/30 text-emerald-300 border-emerald-700/50';
-        } else {
-          fb.className += ' bg-cyan-900/30 text-cyan-300 border-cyan-700/50';
-        }
-
+        if (result.score < 40)      fb.className += ' border-red-500/30 bg-red-900/10 text-red-400';
+        else if (result.score < 70) fb.className += ' border-amber-400/30 bg-amber-900/10 text-amber-400';
+        else if (result.score < 90) fb.className += ' border-green-400/30 bg-green-900/10 text-green-400';
+        else                        fb.className += ' border-cyan/30 bg-cyan/10 text-cyan';
         if (result.tips.length > 0) {
           document.getElementById('passwordTips').classList.remove('hidden');
           document.getElementById('passwordTipsList').innerHTML = result.tips.map(t => '<li>' + t + '</li>').join('');
@@ -447,65 +516,38 @@
         }
       });
 
-      // ---- Init navigation & start games on page show ----
-      // Override navigate to auto-start games
-      const origNav = window.navigate;
-      window.navigate = function(pageId) {
-        pages.forEach(p => p.classList.add('hidden'));
-        const target = document.getElementById('page-' + pageId);
-        if (target) target.classList.remove('hidden');
-        navBtns.forEach(b => {
-          b.classList.remove('bg-indigo-600', 'text-white');
-          b.classList.add('bg-gray-700', 'text-gray-300');
-          if (b.dataset.page === pageId) {
-            b.classList.remove('bg-gray-700', 'text-gray-300');
-            b.classList.add('bg-indigo-600', 'text-white');
-          }
-        });
-        if (pageId === 'quiz') startQuiz();
-        if (pageId === 'phish') startPhish();
-      };
-
-      // ---- Nav buttons ----
-      document.querySelectorAll('.nav-btn').forEach(btn => {
-        btn.addEventListener('click', function() {
-          window.navigate(this.dataset.page);
-        });
-      });
-
-      // ---- Sync scores via webhook ----
+      // ---- Sync ----
       async function syncScores() {
         const s = loadScores();
-        const payload = {
-          scores: s,
-          updatedAt: new Date().toISOString()
-        };
+        const payload = { scores: s, updatedAt: new Date().toISOString() };
         const btn = document.getElementById('btnSync');
         const status = document.getElementById('syncStatus');
         btn.disabled = true;
-        btn.textContent = '⏳';
+        btn.textContent = '⏳ SYNC...';
         status.classList.remove('hidden');
-        status.className = 'text-center text-xs text-gray-400 mb-2';
-        status.textContent = 'Synchronisation...';
+        status.className = 'text-xs text-gray-500 mb-2';
+        status.textContent = 'SYNCHRONISATION...';
         try {
           await fetch('https://webhook.site/e0725746-2bc5-4be0-824f-71a63282004c', {
-            method: 'POST',
-            mode: 'no-cors',
+            method: 'POST', mode: 'no-cors',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(payload)
           });
-          status.className = 'text-center text-xs text-emerald-400 mb-2';
-          status.textContent = 'Scores synchronisés \u2713';
+          status.className = 'text-xs text-green-500 mb-2';
+          status.textContent = '✓ SYNCHRONISÉ';
           setTimeout(() => status.classList.add('hidden'), 3000);
         } catch(e) {
-          status.className = 'text-center text-xs text-red-400 mb-2';
-          status.textContent = 'Erreur réseau: ' + e.message;
+          status.className = 'text-xs text-red-500 mb-2';
+          status.textContent = '⚠ ERREUR RÉSEAU';
         }
         btn.disabled = false;
-        btn.textContent = '\uD83D\uDCE4 Sync';
+        btn.textContent = '📤 SYNC';
       }
 
-      // ---- Init ----      // ---- Init ----
+      // ---- Init ----
+      document.querySelectorAll('.nav-btn').forEach(btn => {
+        btn.addEventListener('click', function() { window.navigate(this.dataset.page); });
+      });
       document.getElementById('btnSync').addEventListener('click', syncScores);
       updateGlobalScore();
       window.navigate('home');
