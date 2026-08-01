@@ -4,6 +4,9 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>CyberPlay — Apprends la cybersécurité en jouant</title>
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+  <meta http-equiv="Pragma" content="no-cache">
+  <meta http-equiv="Expires" content="0">
   <script src="https://cdn.tailwindcss.com"></script>
   <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Orbitron:wght@400;700;900&display=swap" rel="stylesheet">
   <style>
@@ -449,28 +452,9 @@
     </footer>
 
   <script>
-    (function() {
-      'use strict';
-
-      // ---- Navigation ----
+    // ---- Navigation ----
       const pages = document.querySelectorAll('.page');
       const navBtns = document.querySelectorAll('.nav-btn');
-
-      window.navigate = function(pageId) {
-        pages.forEach(p => p.classList.add('hidden'));
-        const target = document.getElementById('page-' + pageId);
-        if (target) target.classList.remove('hidden');
-        navBtns.forEach(b => {
-          b.classList.remove('active', 'text-cyan', 'border-cyan', 'bg-cyan-glow');
-          b.classList.add('text-gray-400', 'border-gray-700');
-          if (b.dataset.page === pageId) {
-            b.classList.remove('text-gray-400', 'border-gray-700');
-            b.classList.add('active', 'text-cyan', 'border-cyan', 'bg-cyan-glow');
-          }
-        });
-        if (pageId === 'quiz') startQuiz();
-        if (pageId === 'phish') startPhish();
-      };
 
       // ---- Data ----
       const STORAGE_KEY = 'cyberplay_scores';
@@ -1015,8 +999,6 @@
         document.getElementById('adminForm').classList.remove('hidden');
       });
 
-      // Patch navigate to render admin
-      var origNav = window.navigate;
       window.navigate = function(pageId) {
         pages.forEach(p => p.classList.add('hidden'));
         const target = document.getElementById('page-' + pageId);
@@ -1049,7 +1031,4 @@
       updateGlobalScore();
       window.navigate('home');
 
-    })();
-  </script>
-</body>
-</html>
+    
