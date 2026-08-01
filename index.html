@@ -561,7 +561,9 @@
         quizIndex = 0;
         quizScore = 0;
         quizAnswered = false;
-        adaptiveQuizOrder = [...quizData].sort((a,b) => a.diff - b.diff);
+        // Shuffle within each difficulty level
+        const byDiff = (d) => quizData.filter(q => q.diff === d).sort(() => Math.random() - 0.5);
+        adaptiveQuizOrder = [...byDiff(1), ...byDiff(2), ...byDiff(3)];
         showQuizQuestion();
       }
 
@@ -636,7 +638,6 @@
           fb.textContent = '❌ FAUX !'; wrongStreak++; correctStreak=0;
         }
         document.getElementById('quizNext').classList.remove('hidden');
-        document.getElementById('quizNext').onclick = () => { quizIndex++; showQuizQuestion(); };
       }
 
       // ---- Phish logic ----
@@ -1036,6 +1037,12 @@
         if (pageId === 'phish') startPhish();
         if (pageId === 'admin') renderAdmin();
       };
+
+      // Persistent quiz next handler
+      document.getElementById('quizNext').addEventListener('click', function() {
+        quizIndex++;
+        showQuizQuestion();
+      });
 
       // ---- Init ----
       document.querySelectorAll('.nav-btn').forEach(btn => {
