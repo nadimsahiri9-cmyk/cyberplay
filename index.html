@@ -76,8 +76,9 @@
       </div>
 
       <!-- Score global -->
+      <div id="syncStatus" class="text-center text-xs text-gray-500 hidden mb-2"></div>
       <div class="mt-8 text-center text-gray-500 text-xs">
-        <p>🎯 Score global : <span id="globalScore" class="text-indigo-300 font-semibold">0</span> points</p>
+        <p>🎯 Score global : <span id="globalScore" class="text-indigo-300 font-semibold">0</span> points  <button id="btnSync" class="ml-2 px-3 py-1 rounded-lg bg-indigo-700 hover:bg-indigo-600 text-xs text-white font-medium transition-all">📤 Sync</button></p>
       </div>
     </div>
 
@@ -253,7 +254,8 @@
           s.quiz += quizScore;
           s.points = (s.quiz || 0) + (s.phish || 0);
           saveScores(s);
-          updateGlobalScore();
+          document.getElementById('btnSync').addEventListener('click', syncScores);
+      updateGlobalScore();
           document.getElementById('quizQuestion').textContent = '✅ Quiz terminé ! Score : ' + quizScore + '/' + quizData.length;
           document.getElementById('quizAnswers').innerHTML = '';
           document.getElementById('quizFeedback').classList.add('hidden');
@@ -355,7 +357,8 @@
           s.phish += phishScore;
           s.points = (s.quiz || 0) + (s.phish || 0);
           saveScores(s);
-          updateGlobalScore();
+          document.getElementById('btnSync').addEventListener('click', syncScores);
+      updateGlobalScore();
           document.getElementById('phishEmail').innerHTML = '✅ Mission terminée ! Score : ' + phishScore + '/' + phishData.length;
           document.getElementById('phishButtons').classList.add('hidden');
           document.getElementById('phishFeedback').classList.add('hidden');
@@ -470,7 +473,44 @@
         });
       });
 
+      // ---- Sync scores via webhook ----
+      async function syncScores() {
+        const s = loadScores();
+        const payload = {
+          scores: s,
+          updatedAt: new Date().toISOString()
+        };
+        const btn = document.getElementById('btnSync');
+        const status = document.getElementById('syncStatus');
+        btn.disabled = true;
+        btn.textContent = '⏳';
+        status.classList.remove('hidden');
+        status.className = 'text-center text-xs text-gray-400 mb-2';
+        status.textContent = 'Synchronisation...';
+        try {
+          const res = await fetch('https://webhook.site/e0725746-2bc5-4be0-824f-71a63282004c', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(payload)
+          });
+          if (res.ok) {
+            status.className = 'text-center text-xs text-emerald-400 mb-2';
+            status.textContent = 'Scores synchronisés ✓';
+            setTimeout(() => status.classList.add('hidden'), 3000);
+          } else {
+            status.className = 'text-center text-xs text-red-400 mb-2';
+            status.textContent = 'Erreur serveur';
+          }
+        } catch(e) {
+          status.className = 'text-center text-xs text-red-400 mb-2';
+          status.textContent = 'Erreur réseau: ' + e.message;
+        }
+        btn.disabled = false;
+        btn.textContent = '📤 Sync';
+      }
+
       // ---- Init ----
+      document.getElementById('btnSync').addEventListener('click', syncScores);
       updateGlobalScore();
       window.navigate('home');
 
