@@ -447,7 +447,7 @@
 
     <footer class="mt-auto text-center pb-4">
       <p class="text-[10px] text-gray-800 tracking-widest border-t border-gray-900 pt-4">
-        CYBERPLAY — NADIM · DONNÉES STOCKÉES LOCALEMENT
+        CYBERPLAY v2.5 — NADIM · DONNÉES STOCKÉES LOCALEMENT
       </p>
     </footer>
 
@@ -610,15 +610,19 @@
             btn.className = 'quiz-ans w-full text-left px-4 py-3 rounded-xl text-sm border border-red-500/50 bg-red-900/20 text-red-400 font-medium';
           }
         });
-        var fbText = '';
         if (selected === q.correct) {
-          fbText = 'CORRECT !'; quizScore++;
+          quizScore++;
+          fb.innerHTML = '<div class="mb-3 text-green-400 font-bold text-base">CORRECT !</div>' +
+            '<button onclick="window.quizNext()" class="w-full py-3 rounded-xl bg-cyan/10 border border-cyan/40 text-cyan font-bold tracking-wider text-sm">SUIVANT</button>';
         } else if (selected === -1) {
-          fbText = 'TEMPS ECOULE !'; wrongStreak++; correctStreak=0;
+          wrongStreak++; correctStreak=0;
+          fb.innerHTML = '<div class="mb-3 text-amber-400 font-bold text-base">TEMPS ECOULE !</div>' +
+            '<button onclick="window.quizNext()" class="w-full py-3 rounded-xl bg-cyan/10 border border-cyan/40 text-cyan font-bold tracking-wider text-sm">SUIVANT</button>';
         } else {
-          fbText = 'FAUX !'; wrongStreak++; correctStreak=0;
+          wrongStreak++; correctStreak=0;
+          fb.innerHTML = '<div class="mb-3 text-red-400 font-bold text-base">FAUX !</div>' +
+            '<button onclick="window.quizNext()" class="w-full py-3 rounded-xl bg-cyan/10 border border-cyan/40 text-cyan font-bold tracking-wider text-sm">SUIVANT</button>';
         }
-        fb.innerHTML = "<div class='mb-3'>" + fbText + "</div><button onclick=\"window.quizNext();\" class='w-full py-3 rounded-xl bg-cyan/10 border border-cyan/40 text-cyan font-bold tracking-wider text-sm hover:bg-cyan/20'>SUIVANT</button>";
       }
       // ---- Phish logic ----
       let phishIndex = 0;
