@@ -240,6 +240,7 @@
       <button data-page="quiz" class="nav-btn px-5 py-2 rounded-xl text-sm font-semibold transition-all text-gray-400 border-gray-700 hover:text-cyan">⚡ Quiz Flash</button>
       <button data-page="phish" class="nav-btn px-5 py-2 rounded-xl text-sm font-semibold transition-all text-gray-400 border-gray-700 hover:text-cyan">🎣 Phish or Not</button>
       <button data-page="password" class="nav-btn px-5 py-2 rounded-xl text-sm font-semibold transition-all text-gray-400 border-gray-700 hover:text-cyan">🔐 Password Hero</button>
+      <button data-page="admin" class="nav-btn px-5 py-2 rounded-xl text-sm font-semibold transition-all text-gray-400 border-gray-700 hover:text-cyan">⚙️ Admin</button>
     </div>
 
     <!-- ============ PAGE ACCUEIL ============ -->
@@ -335,7 +336,100 @@
     </div>
 
     <!-- Footer -->
-        <!-- XP Bar -->
+        <!-- ============ PAGE ADMIN ============ -->
+    <div id="page-admin" class="page hidden slide-in">
+      <div class="card-bg rounded-2xl p-6 sm:p-8">
+        <div class="flex items-center justify-between mb-6 border-b border-cyan/10 pb-4">
+          <h2 class="title-font text-sm font-bold text-cyan tracking-wider">⚙️ ADMIN — QUESTIONS</h2>
+          <button id="btnAddQuestion" class="px-4 py-2 rounded-lg border border-green-400/40 text-green-400 text-xs font-bold hover:bg-green-900/20 transition-all tracking-wider">+ AJOUTER</button>
+        </div>
+
+        <!-- Stats -->
+        <div class="grid grid-cols-3 gap-4 mb-6 text-center text-[10px] text-gray-500 tracking-wider">
+          <div class="border border-cyan/10 rounded-xl p-3"><span id="adminQuizCount" class="text-cyan font-bold text-sm block">0</span>QUESTIONS</div>
+          <div class="border border-green-400/10 rounded-xl p-3"><span id="adminPhishCount" class="text-green-400 font-bold text-sm block">0</span>SCÉNARIOS</div>
+          <div class="border border-pink-400/10 rounded-xl p-3"><span id="adminTotalCount" class="text-pink-400 font-bold text-sm block">0</span>TOTAL</div>
+        </div>
+
+        <!-- Question list -->
+        <div id="adminQuestionList" class="space-y-2 max-h-[400px] overflow-y-auto pr-2"></div>
+
+        <!-- Add/Edit form (hidden) -->
+        <div id="adminForm" class="hidden mt-6 border-t border-cyan/10 pt-6">
+          <h3 id="adminFormTitle" class="title-font text-xs font-bold text-cyan tracking-wider mb-4">NOUVELLE QUESTION</h3>
+          <div class="space-y-3">
+            <div>
+              <label class="text-[10px] text-gray-500 tracking-wider block mb-1">TYPE</label>
+              <select id="adminType" class="w-full px-3 py-2 rounded-lg text-sm border bg-black/50">
+                <option value="quiz">Quiz</option>
+                <option value="phish">Phishing</option>
+              </select>
+            </div>
+            <div>
+              <label class="text-[10px] text-gray-500 tracking-wider block mb-1">DIFFICULTÉ (quiz)</label>
+              <select id="adminDiff" class="w-full px-3 py-2 rounded-lg text-sm border bg-black/50">
+                <option value="1">Débutant</option>
+                <option value="2">Intermédiaire</option>
+                <option value="3">Avancé</option>
+              </select>
+            </div>
+            <div>
+              <label class="text-[10px] text-gray-500 tracking-wider block mb-1">QUESTION / SUJET</label>
+              <input type="text" id="adminQ" class="w-full px-3 py-2 rounded-lg text-sm border bg-black/50" placeholder="Question...">
+            </div>
+            <div id="adminPhishFields" class="hidden space-y-3">
+              <div>
+                <label class="text-[10px] text-gray-500 tracking-wider block mb-1">EXPÉDITEUR</label>
+                <input type="text" id="adminFrom" class="w-full px-3 py-2 rounded-lg text-sm border bg-black/50" placeholder="email@domain.com">
+              </div>
+              <div>
+                <label class="text-[10px] text-gray-500 tracking-wider block mb-1">CORPS DU MESSAGE</label>
+                <textarea id="adminBody" class="w-full px-3 py-2 rounded-lg text-sm border bg-black/50" rows="3" placeholder="Corps du message..."></textarea>
+              </div>
+              <div>
+                <label class="text-[10px] text-gray-500 tracking-wider block mb-1">IS PHISHING ?</label>
+                <select id="adminIsPhishing" class="w-full px-3 py-2 rounded-lg text-sm border bg-black/50">
+                  <option value="true">Oui (phishing)</option>
+                  <option value="false">Non (légitime)</option>
+                </select>
+              </div>
+              <div>
+                <label class="text-[10px] text-gray-500 tracking-wider block mb-1">EXPLICATION</label>
+                <textarea id="adminExplanation" class="w-full px-3 py-2 rounded-lg text-sm border bg-black/50" rows="2" placeholder="Explication..."></textarea>
+              </div>
+            </div>
+            <div id="adminQuizFields" class="space-y-3">
+              <div>
+                <label class="text-[10px] text-gray-500 tracking-wider block mb-1">BONNE RÉPONSE (0-3)</label>
+                <input type="number" id="adminCorrect" class="w-full px-3 py-2 rounded-lg text-sm border bg-black/50" min="0" max="3" value="0">
+              </div>
+              <div>
+                <label class="text-[10px] text-gray-500 tracking-wider block mb-1">RÉPONSE A</label>
+                <input type="text" id="adminA" class="w-full px-3 py-2 rounded-lg text-sm border bg-black/50" placeholder="Réponse A">
+              </div>
+              <div>
+                <label class="text-[10px] text-gray-500 tracking-wider block mb-1">RÉPONSE B</label>
+                <input type="text" id="adminB" class="w-full px-3 py-2 rounded-lg text-sm border bg-black/50" placeholder="Réponse B">
+              </div>
+              <div>
+                <label class="text-[10px] text-gray-500 tracking-wider block mb-1">RÉPONSE C</label>
+                <input type="text" id="adminC" class="w-full px-3 py-2 rounded-lg text-sm border bg-black/50" placeholder="Réponse C">
+              </div>
+              <div>
+                <label class="text-[10px] text-gray-500 tracking-wider block mb-1">RÉPONSE D</label>
+                <input type="text" id="adminD" class="w-full px-3 py-2 rounded-lg text-sm border bg-black/50" placeholder="Réponse D">
+              </div>
+            </div>
+            <div class="flex gap-3 justify-end mt-4">
+              <button id="adminCancel" class="px-4 py-2 rounded-lg border border-gray-600 text-gray-400 text-xs font-bold hover:bg-gray-800 transition-all">ANNULER</button>
+              <button id="adminSave" class="px-4 py-2 rounded-lg border border-green-400/40 text-green-400 text-xs font-bold hover:bg-green-900/20 transition-all">💾 SAUVEGARDER</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- XP Bar -->
     <div id="xpSection" class="mt-8 max-w-md mx-auto hidden">
       <div class="flex items-center justify-between text-[10px] text-gray-600 tracking-wider mb-1">
         <span>NIVEAU <span id="xpLevel" class="text-cyan">1</span></span>
@@ -381,15 +475,46 @@
       // ---- Data ----
       const STORAGE_KEY = 'cyberplay_scores';
 
-      const quizData = [
-        { q: "Qu'est-ce qu'un phishing ?", a: ["Un type de virus", "Une tentative de vol de données par email frauduleux", "Un pare-feu", "Un mot de passe"], correct: 1 },
-        { q: "Que signifie HTTPS ?", a: ["Hyper Text Transfer Protocol Secure", "High Tech Protocol System", "Home Transfer Protocol Service", "Hyper Text Terminal System"], correct: 0 },
-        { q: "Quel est le meilleur moyen de protéger un compte ?", a: ["Un mot de passe simple", "L'authentification à deux facteurs (2FA)", "Ne jamais se connecter", "Utiliser le même mot de passe partout"], correct: 1 },
+            const quizData = [
+        // ---- DÉBUTANT (10) ----
+        { diff: 1, q: "Qu'est-ce que le phishing ?", a: ["Un type de virus informatique", "Une tentative de vol de données par email ou SMS frauduleux", "Un pare-feu", "Un logiciel antivirus"], correct: 1 },
+        { diff: 1, q: "Que signifie HTTPS ?", a: ["Hyper Text Transfer Protocol Secure", "High Tech Protocol Standard", "Home Transfer Protocol Service", "Hyper Text Terminal System"], correct: 0 },
+        { diff: 1, q: "Quel est le meilleur moyen de protéger l'accès à un compte en ligne ?", a: ["Un mot de passe court et simple", "L'authentification à deux facteurs (2FA)", "Ne jamais se connecter", "Utiliser le même mot de passe partout"], correct: 1 },
+        { diff: 1, q: "Un mot de passe sécurisé doit contenir :", a: ["Uniquement des chiffres", "Au moins 8 caractères avec mélange lettres/chiffres/symboles", "Ton prénom et ta date de naissance", "Un seul caractère répété"], correct: 1 },
+        { diff: 1, q: "Qu'est-ce qu'un antivirus ?", a: ["Un logiciel qui crée des virus", "Un programme qui détecte et supprime les logiciels malveillants", "Un type de navigateur web", "Un périphérique USB"], correct: 1 },
+        { diff: 1, q: "Que faire si tu reçois un email suspect avec une pièce jointe ?", a: ["L'ouvrir immédiatement", "Le transférer à tous tes contacts", "Ne pas l'ouvrir et le signaler", "Répondre pour demander plus d'informations"], correct: 2 },
+        { diff: 1, q: "Qu'est-ce qu'un VPN ?", a: ["Un type de virus", "Un réseau privé virtuel qui chiffre ta connexion", "Un logiciel de montage vidéo", "Un navigateur web"], correct: 1 },
+        { diff: 1, q: "Qu'est-ce que le pare-feu (firewall) ?", a: ["Un mur en béton", "Un système qui filtre le trafic réseau", "Un type de mot de passe", "Un câble Ethernet"], correct: 1 },
+        { diff: 1, q: "Quel est le risque d'utiliser le même mot de passe partout ?", a: ["Aucun risque", "Si un site est piraté, tous tes comptes sont vulnérables", "C'est plus simple à retenir", "Les sites sont tous sécurisés de toute façon"], correct: 1 },
+        { diff: 1, q: "Que signifie 'mettre à jour son logiciel' ?", a: ["Le supprimer", "Installer la dernière version qui corrige des failles de sécurité", "Le payer", "Le partager avec des amis"], correct: 1 },
+        // ---- INTERMÉDIAIRE (10) ----
+        { diff: 2, q: "Qu'est-ce que l'ingénierie sociale (social engineering) ?", a: ["Une technique de construction", "La manipulation psychologique pour obtenir des informations confidentielles", "Un type de cryptage", "Un réseau social"], correct: 1 },
+        { diff: 2, q: "Quelle est la différence entre un virus et un ver ?", a: ["Il n'y a pas de différence", "Un ver se propage sans fichier hôte, un virus a besoin d'un fichier hôte", "Un virus est plus rapide", "Un ver est un type d'antivirus"], correct: 1 },
+        { diff: 2, q: "Qu'est-ce que le chiffrement (encryption) ?", a: ["Un code secret pour cacher des messages", "Le processus de convertir des données en code illisible sans clé", "Un type de virus", "Un logiciel de compression"], correct: 1 },
+        { diff: 2, q: "Qu'est-ce qu'un keylogger ?", a: ["Un logiciel qui enregistre les frappes clavier", "Un type de clavier sécurisé", "Un gestionnaire de mots de passe", "Un outil de développement"], correct: 0 },
+        { diff: 2, q: "Qu'est-ce que le spear phishing ?", a: ["Une attaque de phishing généralisée", "Un phishing ciblé visant une personne ou organisation spécifique", "Un type de poisson", "Un antivirus"], correct: 1 },
+        { diff: 2, q: "Qu'est-ce que le ransomware ?", a: ["Un logiciel qui vole des mots de passe", "Un logiciel malveillant qui chiffre tes fichiers et demande une rançon", "Un type de pare-feu", "Un navigateur sécurisé"], correct: 1 },
+        { diff: 2, q: "Comment reconnaître un site de phishing ?", a: ["Il a un logo officiel", "L'URL est suspecte et le site demande des informations personnelles", "Il utilise HTTPS", "Il est référencé sur Google"], correct: 1 },
+        { diff: 2, q: "Qu'est-ce que le spoofing ?", a: ["Un jeu vidéo", "L'usurpation d'identité numérique (email, téléphone, site web)", "Un type de cryptage", "Un logiciel de sécurité"], correct: 1 },
+        { diff: 2, q: "Qu'est-ce qu'un gestionnaire de mots de passe ?", a: ["Un carnet physique", "Un logiciel qui génère et stocke des mots de passe sécurisés", "Un type de virus", "Un navigateur"], correct: 1 },
+        { diff: 2, q: "Qu'est-ce que le 'principe du moindre privilège' ?", a: ["Donner le moins d'accès possible à chaque utilisateur", "Tout le monde a accès à tout", "Utiliser un mot de passe simple", "Ne jamais partager son écran"], correct: 0 },
+        // ---- AVANCÉ (5) ----
+        { diff: 3, q: "Qu'est-ce qu'une injection SQL ?", a: ["Une attaque qui insère du code SQL malveillant dans une requête", "Un type de base de données", "Un langage de programmation", "Un antivirus"], correct: 0 },
+        { diff: 3, q: "Qu'est-ce qu'une attaque XSS (Cross-Site Scripting) ?", a: ["Un script qui s'exécute côté serveur", "Une injection de code JavaScript malveillant dans une page web", "Un type de ver informatique", "Une attaque réseau"], correct: 1 },
+        { diff: 3, q: "Qu'est-ce qu'une attaque MITM (Man-in-the-Middle) ?", a: ["Une attaque où un attaquant intercepte la communication entre deux parties", "Un type de pare-feu", "Un logiciel de messagerie", "Un protocole réseau"], correct: 0 },
+        { diff: 3, q: "Qu'est-ce qu'un zero-day ?", a: ["Un bug connu depuis longtemps", "Une vulnérabilité non encore corrigée par l'éditeur du logiciel", "Un type de mise à jour", "Un score de sécurité"], correct: 1 },
+        { diff: 3, q: "Quelle est la différence entre chiffrement symétrique et asymétrique ?", a: ["Symétrique utilise une clé, asymétrique utilise deux clés (publique/privée)", "Il n'y a pas de différence", "Symétrique est plus lent", "Asymétrique utilise une seule clé"], correct: 0 },
       ];
 
-      const phishData = [
-        { sujet: "Votre compte bancaire est bloqué", from: "banque-securite@secure-login.xyz", corps: "Cher client, veuillez cliquer ici pour débloquer votre compte sous 24h.", isPhishing: true, explication: "L'expéditeur est suspect (secure-login.xyz au lieu du vrai domaine bancaire). Les banques ne demandent jamais de cliquer sur un lien par email." },
-        { sujet: "Facture mars 2026", from: "factures@votre-fournisseur.com", corps: "Votre facture du mois de mars est disponible en pièce jointe.", isPhishing: false, explication: "L'expéditeur semble légitime et le message est standard. Vérifie toujours le domaine avant d'ouvrir une pièce jointe." },
+            const phishData = [
+        { sujet: "Votre compte bancaire est bloqué", from: "banque-securite@secure-login.xyz", corps: "Cher client, votre accès sera suspendu sous 24h. Cliquez ici pour vérifier votre identité : http://bit.ly/2xbK9qR", isPhishing: true, explication: "Expéditeur suspect (domaine secure-login.xyz). Les banques ne demandent jamais de cliquer sur un lien par email." },
+        { sujet: "Facture mars 2026", from: "factures@votre-fournisseur.com", corps: "Votre facture est disponible. Veuillez trouver la pièce jointe (PDF, 230 Ko). Merci de votre confiance.", isPhishing: false, explication: "Expéditeur légitime, message standard. Reste prudent avec les pièces jointes." },
+        { sujet: "URGENT : problème de livraison Amazon", from: "service-client@amaz0n-support.net", corps: "Votre colis n'a pas pu être livré. Mettez à jour vos coordonnées ici pour reprogrammer : https://amaz0n-login.com", isPhishing: true, explication: "Domaine frauduleux (amaz0n au lieu d'amazon). Amazon utilise Amazon.fr et ne demande jamais de mettre à jour ses coordonnées par email." },
+        { sujet: "Notification de sécurité Google", from: "no-reply@accounts.google.com", corps: "Nouvelle connexion détectée sur votre compte Google. Si ce n'était pas vous, sécurisez votre compte : https://myaccount.google.com/security", isPhishing: false, explication: "Email légitime de Google. Tu peux vérifier dans ton tableau de bord les connexions récentes." },
+        { sujet: "Vous avez gagné un iPhone 16 !", from: "concours@promo-gagnant.top", corps: "Félicitations ! Vous êtes le 1 000 000e visiteur. Cliquez ici pour réclamer votre prix : http://win-iphone.tk/claim", isPhishing: true, explication: "Classique arnaque au faux concours. Les vrais concours ne demandent pas de cliquer sur des liens suspects." },
+        { sujet: "Remboursement impôts 2026", from: "remboursement@dgfip-finances.gouv.fr", corps: "Vous avez droit à un remboursement de 184,50 €. Cliquez sur le lien ci-contre pour confirmer votre RIB.", isPhishing: true, explication: "Le domaine dgfip-finances.gouv.fr est un faux. L'administration fiscale utilise impots.gouv.fr." },
+        { sujet: "Confirmation de rendez-vous Doctolib", from: "contact@doctolib.fr", corps: "Rappel : votre rendez-vous avec Dr Martin est confirmé pour le 05/08/2026 à 14h30. Pour annuler : https://www.doctolib.fr/annuler/ABC123", isPhishing: false, explication: "Email légitime de Doctolib. Le lien pointe vers le vrai site doctolib.fr." },
+        { sujet: "Mise à jour urgente : Webmail", from: "support@webmail-update.xyz", corps: "Votre boîte mail arrive à saturation. Cliquez ici pour augmenter votre capacité de stockage : http://webmail.secure-update.xyz/login", isPhishing: true, explication: "Domaine suspect (webmail-update.xyz). Les fournisseurs de messagerie ne demandent jamais de se connecter via un lien dans un email." },
       ];
 
       // ---- Password scoring ----
@@ -452,7 +577,7 @@
           document.getElementById('quizTimer').style.width = '100%';
           return;
         }
-        const q = quizData[quizIndex];
+        const q = adaptiveQuizOrder[quizIndex] || quizData[quizIndex];
         document.getElementById('quizCurrent').textContent = quizIndex + 1;
         document.getElementById('quizTotal').textContent = quizData.length;
         document.getElementById('quizQuestion').textContent = q.q;
@@ -486,7 +611,7 @@
       }
 
       function showQuizFeedback(selected) {
-        const q = quizData[quizIndex];
+        const q = adaptiveQuizOrder[quizIndex] || quizData[quizIndex];
         const fb = document.getElementById('quizFeedback');
         fb.classList.remove('hidden');
         document.querySelectorAll('.quiz-ans').forEach((btn, i) => {
@@ -503,10 +628,10 @@
           quizScore++;
         } else if (selected === -1) {
           fb.className = 'mt-4 p-4 rounded-xl text-sm font-medium border border-amber-400/30 bg-amber-900/10 text-amber-400';
-          fb.textContent = '⏰ TEMPS ÉCOULÉ !';
+          fb.textContent = '⏰ TEMPS ÉCOULÉ !'; wrongStreak++; correctStreak=0;
         } else {
           fb.className = 'mt-4 p-4 rounded-xl text-sm font-medium border border-red-500/30 bg-red-900/10 text-red-400';
-          fb.textContent = '❌ FAUX !';
+          fb.textContent = '❌ FAUX !'; wrongStreak++; correctStreak=0;
         }
         document.getElementById('quizNext').classList.remove('hidden');
         document.getElementById('quizNext').onclick = () => { quizIndex++; showQuizQuestion(); };
@@ -721,6 +846,195 @@
         origUpdateScore();
         updateXP();
       };
+
+      // ---- Admin mode ----
+      let adminEditIndex = -1;
+
+      // Show/hide phish vs quiz fields
+      document.getElementById('adminType')?.addEventListener('change', function() {
+        document.getElementById('adminQuizFields').classList.toggle('hidden', this.value !== 'quiz');
+        document.getElementById('adminPhishFields').classList.toggle('hidden', this.value !== 'phish');
+        document.getElementById('adminDiff').parentElement.classList.toggle('hidden', this.value !== 'quiz');
+        document.getElementById('adminFormTitle').textContent = this.value === 'quiz' ? 'NOUVELLE QUESTION' : 'NOUVEAU SCÉNARIO';
+      });
+
+      function renderAdmin() {
+        const list = document.getElementById('adminQuestionList');
+        if (!list) return;
+        document.getElementById('adminQuizCount').textContent = quizData.length;
+        document.getElementById('adminPhishCount').textContent = phishData.length;
+        document.getElementById('adminTotalCount').textContent = quizData.length + phishData.length;
+
+        let html = '';
+        // Quiz questions
+        quizData.forEach((q, i) => {
+          const diffLabels = ['', '🟢 Débutant', '🟡 Intermédiaire', '🔴 Avancé'];
+          html += '<div class="flex items-center gap-2 px-3 py-2 rounded-lg border border-cyan/10 hover:border-cyan/30 transition-all text-xs">';
+          html += '<span class="text-gray-600 w-6">Q' + (i+1) + '</span>';
+          html += '<span class="text-[10px] text-cyan/60 w-16">' + diffLabels[q.diff] + '</span>';
+          html += '<span class="flex-1 text-gray-300 truncate">' + q.q + '</span>';
+          html += '<button data-aq="' + i + '" class="btn-admin-edit text-gray-500 hover:text-cyan transition-all px-2">✏️</button>';
+          html += '<button data-aq="' + i + '" class="btn-admin-del text-gray-500 hover:text-red-400 transition-all px-2">✕</button>';
+          html += '</div>';
+        });
+        // Phish scenarios
+        phishData.forEach((p, i) => {
+          html += '<div class="flex items-center gap-2 px-3 py-2 rounded-lg border border-green-400/10 hover:border-green-400/30 transition-all text-xs">';
+          html += '<span class="text-gray-600 w-6">P' + (i+1) + '</span>';
+          html += '<span class="text-green-400/60 text-[10px] w-16">' + (p.isPhishing ? '🎣 Phishing' : '✅ Légitime') + '</span>';
+          html += '<span class="flex-1 text-gray-300 truncate">' + p.sujet + '</span>';
+          html += '<button data-ap="' + i + '" class="btn-admin-edit-phish text-gray-500 hover:text-green-400 transition-all px-2">✏️</button>';
+          html += '<button data-ap="' + i + '" class="btn-admin-del-phish text-gray-500 hover:text-red-400 transition-all px-2">✕</button>';
+          html += '</div>';
+        });
+
+        list.innerHTML = html || '<p class="text-gray-600 text-xs text-center py-4">Aucune question</p>';
+
+        // Delete quiz
+        list.querySelectorAll('.btn-admin-del').forEach(b => {
+          b.onclick = function() {
+            const idx = parseInt(this.dataset.aq, 10);
+            if (confirm('Supprimer cette question ?')) {
+              quizData.splice(idx, 1);
+              renderAdmin();
+            }
+          };
+        });
+        // Delete phish
+        list.querySelectorAll('.btn-admin-del-phish').forEach(b => {
+          b.onclick = function() {
+            const idx = parseInt(this.dataset.ap, 10);
+            if (confirm('Supprimer ce scénario ?')) {
+              phishData.splice(idx, 1);
+              renderAdmin();
+            }
+          };
+        });
+        // Edit quiz
+        list.querySelectorAll('.btn-admin-edit').forEach(b => {
+          b.onclick = function() {
+            const idx = parseInt(this.dataset.aq, 10);
+            const q = quizData[idx];
+            document.getElementById('adminType').value = 'quiz';
+            document.getElementById('adminType').dispatchEvent(new Event('change'));
+            document.getElementById('adminQ').value = q.q;
+            document.getElementById('adminDiff').value = q.diff;
+            document.getElementById('adminCorrect').value = q.correct;
+            document.getElementById('adminA').value = q.a[0] || '';
+            document.getElementById('adminB').value = q.a[1] || '';
+            document.getElementById('adminC').value = q.a[2] || '';
+            document.getElementById('adminD').value = q.a[3] || '';
+            document.getElementById('adminFormTitle').textContent = 'MODIFIER QUESTION';
+            adminEditIndex = idx;
+            document.getElementById('adminForm').classList.remove('hidden');
+          };
+        });
+        // Edit phish
+        list.querySelectorAll('.btn-admin-edit-phish').forEach(b => {
+          b.onclick = function() {
+            const idx = parseInt(this.dataset.ap, 10);
+            const p = phishData[idx];
+            document.getElementById('adminType').value = 'phish';
+            document.getElementById('adminType').dispatchEvent(new Event('change'));
+            document.getElementById('adminQ').value = p.sujet;
+            document.getElementById('adminFrom').value = p.from;
+            document.getElementById('adminBody').value = p.corps;
+            document.getElementById('adminIsPhishing').value = p.isPhishing;
+            document.getElementById('adminExplanation').value = p.explication;
+            document.getElementById('adminFormTitle').textContent = 'MODIFIER SCÉNARIO';
+            adminEditIndex = idx;
+            document.getElementById('adminForm').classList.remove('hidden');
+          };
+        });
+      }
+
+      // Save question
+      document.getElementById('adminSave')?.addEventListener('click', function() {
+        const type = document.getElementById('adminType').value;
+        if (type === 'quiz') {
+          const answers = [
+            document.getElementById('adminA').value.trim(),
+            document.getElementById('adminB').value.trim(),
+            document.getElementById('adminC').value.trim(),
+            document.getElementById('adminD').value.trim()
+          ];
+          const q = {
+            diff: parseInt(document.getElementById('adminDiff').value, 10),
+            q: document.getElementById('adminQ').value.trim(),
+            a: answers,
+            correct: parseInt(document.getElementById('adminCorrect').value, 10)
+          };
+          if (!q.q || answers.some(a => !a)) { alert('Remplis tous les champs'); return; }
+          if (adminEditIndex >= 0) {
+            quizData[adminEditIndex] = q;
+          } else {
+            quizData.push(q);
+          }
+        } else {
+          const p = {
+            sujet: document.getElementById('adminQ').value.trim(),
+            from: document.getElementById('adminFrom').value.trim(),
+            corps: document.getElementById('adminBody').value.trim(),
+            isPhishing: document.getElementById('adminIsPhishing').value === 'true',
+            explication: document.getElementById('adminExplanation').value.trim()
+          };
+          if (!p.sujet || !p.from || !p.corps) { alert('Remplis tous les champs'); return; }
+          if (adminEditIndex >= 0) {
+            phishData[adminEditIndex] = p;
+          } else {
+            phishData.push(p);
+          }
+        }
+        adminEditIndex = -1;
+        document.getElementById('adminForm').classList.add('hidden');
+        renderAdmin();
+      });
+
+      // Cancel
+      document.getElementById('adminCancel')?.addEventListener('click', function() {
+        adminEditIndex = -1;
+        document.getElementById('adminForm').classList.add('hidden');
+      });
+
+      // Add new question button
+      document.getElementById('btnAddQuestion')?.addEventListener('click', function() {
+        adminEditIndex = -1;
+        document.getElementById('adminFormTitle').textContent = 'NOUVELLE QUESTION';
+        document.getElementById('adminType').value = 'quiz';
+        document.getElementById('adminType').dispatchEvent(new Event('change'));
+        document.getElementById('adminQ').value = '';
+        document.getElementById('adminDiff').value = '1';
+        document.getElementById('adminCorrect').value = '0';
+        document.getElementById('adminA').value = '';
+        document.getElementById('adminB').value = '';
+        document.getElementById('adminC').value = '';
+        document.getElementById('adminD').value = '';
+        document.getElementById('adminFrom').value = '';
+        document.getElementById('adminBody').value = '';
+        document.getElementById('adminIsPhishing').value = 'true';
+        document.getElementById('adminExplanation').value = '';
+        document.getElementById('adminForm').classList.remove('hidden');
+      });
+
+      // Patch navigate to render admin
+      var origNav = window.navigate;
+      window.navigate = function(pageId) {
+        pages.forEach(p => p.classList.add('hidden'));
+        const target = document.getElementById('page-' + pageId);
+        if (target) target.classList.remove('hidden');
+        navBtns.forEach(b => {
+          b.classList.remove('active', 'text-cyan', 'border-cyan', 'bg-cyan-glow');
+          b.classList.add('text-gray-400', 'border-gray-700');
+          if (b.dataset.page === pageId) {
+            b.classList.remove('text-gray-400', 'border-gray-700');
+            b.classList.add('active', 'text-cyan', 'border-cyan', 'bg-cyan-glow');
+          }
+        });
+        if (pageId === 'quiz') startQuiz();
+        if (pageId === 'phish') startPhish();
+        if (pageId === 'admin') renderAdmin();
+      };
+
       // ---- Init ----
       document.querySelectorAll('.nav-btn').forEach(btn => {
         btn.addEventListener('click', function() { window.navigate(this.dataset.page); });
