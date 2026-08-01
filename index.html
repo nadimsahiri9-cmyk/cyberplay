@@ -617,7 +617,7 @@
       function showQuizFeedback(selected) {
         const q = adaptiveQuizOrder[quizIndex] || quizData[quizIndex];
         const fb = document.getElementById('quizFeedback');
-        fb.classList.remove('hidden');
+        fb.style.display = 'block';
         document.querySelectorAll('.quiz-ans').forEach((btn, i) => {
           btn.style.cursor = 'default';
           if (i === q.correct) {
@@ -626,20 +626,16 @@
             btn.className = 'quiz-ans w-full text-left px-4 py-3 rounded-xl text-sm border border-red-500/50 bg-red-900/20 text-red-400 font-medium';
           }
         });
+        var fbText = '';
         if (selected === q.correct) {
-          fb.className = 'mt-4 p-4 rounded-xl text-sm font-medium border border-green-400/30 bg-green-900/10 text-green-400';
-          fb.textContent = '✅ CORRECT !';
-          quizScore++;
+          fbText = 'CORRECT !'; quizScore++;
         } else if (selected === -1) {
-          fb.className = 'mt-4 p-4 rounded-xl text-sm font-medium border border-amber-400/30 bg-amber-900/10 text-amber-400';
-          fb.textContent = '⏰ TEMPS ÉCOULÉ !'; wrongStreak++; correctStreak=0;
+          fbText = 'TEMPS ECOULE !'; wrongStreak++; correctStreak=0;
         } else {
-          fb.className = 'mt-4 p-4 rounded-xl text-sm font-medium border border-red-500/30 bg-red-900/10 text-red-400';
-          fb.textContent = '❌ FAUX !'; wrongStreak++; correctStreak=0;
+          fbText = 'FAUX !'; wrongStreak++; correctStreak=0;
         }
-        document.getElementById('quizNext').classList.remove('hidden');
+        fb.innerHTML = "<div class='mb-3'>" + fbText + "</div><button onclick=\"document.getElementById('quizNext').click();\" class='w-full py-3 rounded-xl bg-cyan/10 border border-cyan/40 text-cyan font-bold tracking-wider text-sm hover:bg-cyan/20'>SUIVANT</button>";
       }
-
       // ---- Phish logic ----
       let phishIndex = 0;
       let phishScore = 0;
