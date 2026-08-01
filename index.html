@@ -555,11 +555,13 @@
       let quizScore = 0;
       let quizAnswered = false;
       let quizTimerInterval = null;
+      let adaptiveQuizOrder = [];
 
       function startQuiz() {
         quizIndex = 0;
         quizScore = 0;
         quizAnswered = false;
+        adaptiveQuizOrder = [...quizData].sort((a,b) => a.diff - b.diff);
         showQuizQuestion();
       }
 
