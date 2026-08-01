@@ -576,7 +576,7 @@
           updateGlobalScore();
           fireConfetti(); document.getElementById('quizQuestion').innerHTML = '✅ QUIZ TERMINÉ — SCORE : ' + quizScore + '/' + quizData.length;
           document.getElementById('quizAnswers').innerHTML = '';
-          document.getElementById('quizFeedback').classList.add('hidden');
+          document.getElementById('quizFeedback').style.display = 'none';
           document.getElementById('quizNext').classList.add('hidden');
           document.getElementById('quizTimer').style.width = '100%';
           return;
@@ -590,7 +590,7 @@
           html += `<button data-qi="${i}" class="quiz-ans game-btn w-full text-left px-4 py-3 rounded-xl text-sm text-gray-300 font-medium">${ans}</button>`;
         });
         document.getElementById('quizAnswers').innerHTML = html;
-        document.getElementById('quizFeedback').classList.add('hidden');
+        document.getElementById('quizFeedback').style.display = 'none';
         document.getElementById('quizNext').classList.add('hidden');
         document.getElementById('quizTimer').style.width = '100%';
         quizAnswered = false;
