@@ -150,9 +150,79 @@
       box-shadow: 0 0 10px rgba(0,255,247,0.15) !important;
     }
     input::placeholder, textarea::placeholder { color: rgba(0,255,247,0.3) !important; }
+
+    /* --- Gaming animations --- */
+    @keyframes glitch {
+      0% { text-shadow: 2px 0 #00fff7, -2px 0 #ff00aa; transform: translate(0); }
+      20% { text-shadow: -2px 0 #00fff7, 2px 0 #ff00aa; transform: translate(-2px, 2px); }
+      40% { text-shadow: 2px 0 #00fff7, -2px 0 #ff00aa; transform: translate(2px, -1px); }
+      60% { text-shadow: -1px 0 #00fff7, 1px 0 #ff00aa; transform: translate(-1px, 1px); }
+      80% { text-shadow: 1px 0 #00fff7, -1px 0 #ff00aa; transform: translate(0); }
+      100% { text-shadow: 2px 0 #00fff7, -2px 0 #ff00aa; transform: translate(0); }
+    }
+    .glitch:hover { animation: glitch 0.3s ease-in-out 3; cursor: default; }
+
+    @keyframes shake {
+      0%, 100% { transform: translateX(0); }
+      10%, 30%, 50%, 70%, 90% { transform: translateX(-4px); }
+      20%, 40%, 60%, 80% { transform: translateX(4px); }
+    }
+    .shake { animation: shake 0.4s ease-in-out; }
+
+    @keyframes float-particle {
+      0% { transform: translateY(0) scale(1); opacity: 0; }
+      10% { opacity: 1; }
+      90% { opacity: 0.3; }
+      100% { transform: translateY(-400px) scale(1.5); opacity: 0; }
+    }
+
+    @keyframes xp-fill {
+      from { width: 0%; }
+    }
+
+    .xp-bar-inner {
+      transition: width 0.5s ease-out;
+    }
+
+    @keyframes confetti-fall {
+      0% { transform: translateY(-10px) rotate(0deg); opacity: 1; }
+      100% { transform: translateY(300px) rotate(720deg); opacity: 0; }
+    }
+    .confetti-piece {
+      position: fixed;
+      width: 6px;
+      height: 6px;
+      pointer-events: none;
+      z-index: 9998;
+      animation: confetti-fall 1.5s ease-in forwards;
+    }
+
+    #particleCanvas {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      pointer-events: none;
+      z-index: 0;
+      opacity: 0.15;
+    }
+
+    .xp-container {
+      background: rgba(0,0,0,0.5);
+      border: 1px solid rgba(0,255,247,0.15);
+      border-radius: 999px;
+      overflow: hidden;
+      height: 18px;
+    }
+    .xp-container .xp-fill {
+      height: 100%;
+      background: linear-gradient(90deg, #00fff7, #00ff41);
+      border-radius: 999px;
+      transition: width 0.6s ease-out;
+    }
   </style>
 </head>
 <body class="text-gray-100 antialiased min-h-screen flex flex-col">
+<canvas id="particleCanvas"></canvas>
 
   <div class="max-w-4xl mx-auto px-4 sm:px-6 py-6 sm:py-10 w-full flex flex-col flex-1 relative" style="z-index:1">
 
@@ -265,12 +335,24 @@
     </div>
 
     <!-- Footer -->
-    <footer class="mt-auto pt-8 text-center">
+        <!-- XP Bar -->
+    <div id="xpSection" class="mt-8 max-w-md mx-auto hidden">
+      <div class="flex items-center justify-between text-[10px] text-gray-600 tracking-wider mb-1">
+        <span>NIVEAU <span id="xpLevel" class="text-cyan">1</span></span>
+        <span><span id="xpCurrent" class="text-cyan">0</span> / <span id="xpMax" class="text-gray-500">100</span> XP</span>
+      </div>
+      <div class="xp-container">
+        <div id="xpFill" class="xp-fill" style="width:0%"></div>
+      </div>
+    </div>
+
+  </div>
+
+    <footer class="mt-auto text-center pb-4">
       <p class="text-[10px] text-gray-800 tracking-widest border-t border-gray-900 pt-4">
         CYBERPLAY — NADIM · DONNÉES STOCKÉES LOCALEMENT
       </p>
     </footer>
-  </div>
 
   <script>
     (function() {
@@ -363,7 +445,7 @@
           s.points = (s.quiz || 0) + (s.phish || 0);
           saveScores(s);
           updateGlobalScore();
-          document.getElementById('quizQuestion').innerHTML = '✅ QUIZ TERMINÉ — SCORE : ' + quizScore + '/' + quizData.length;
+          fireConfetti(); document.getElementById('quizQuestion').innerHTML = '✅ QUIZ TERMINÉ — SCORE : ' + quizScore + '/' + quizData.length;
           document.getElementById('quizAnswers').innerHTML = '';
           document.getElementById('quizFeedback').classList.add('hidden');
           document.getElementById('quizNext').classList.add('hidden');
@@ -449,7 +531,7 @@
           s.points = (s.quiz || 0) + (s.phish || 0);
           saveScores(s);
           updateGlobalScore();
-          document.getElementById('phishEmail').innerHTML = '✅ MISSION TERMINÉE — SCORE : ' + phishScore + '/' + phishData.length;
+          fireConfetti(); document.getElementById('phishEmail').innerHTML = '✅ MISSION TERMINÉE — SCORE : ' + phishScore + '/' + phishData.length;
           document.getElementById('phishButtons').classList.add('hidden');
           document.getElementById('phishFeedback').classList.add('hidden');
           document.getElementById('phishNext').classList.add('hidden');
@@ -544,6 +626,101 @@
         btn.textContent = '📤 SYNC';
       }
 
+
+      // ---- Gaming animations ----
+      // Floating binary particles (canvas)
+      (function() {
+        const canvas = document.getElementById('particleCanvas');
+        if (!canvas) return;
+        const ctx = canvas.getContext('2d');
+        let W, H;
+        function resize() {
+          W = canvas.width = window.innerWidth;
+          H = canvas.height = window.innerHeight;
+        }
+        resize();
+        window.addEventListener('resize', resize);
+        const chars = '01';
+        const particles = [];
+        for (let i = 0; i < 60; i++) {
+          particles.push({
+            x: Math.random() * W,
+            y: Math.random() * H * 2,
+            char: chars[Math.floor(Math.random() * chars.length)],
+            size: 10 + Math.random() * 6,
+            speed: 0.2 + Math.random() * 0.5,
+            opacity: 0.05 + Math.random() * 0.1
+          });
+        }
+        let frame = 0;
+        function draw() {
+          frame++;
+          ctx.clearRect(0, 0, W, H);
+          ctx.font = '12px "Share Tech Mono"';
+          particles.forEach(p => {
+            p.y -= p.speed;
+            if (p.y < -20) { p.y = H + 20; p.x = Math.random() * W; }
+            ctx.fillStyle = 'rgba(0,255,247,' + p.opacity + ')';
+            ctx.fillText(p.char, p.x, p.y);
+            // Randomly change char every few frames
+            if (frame % 7 === 0 && Math.random() > 0.7) {
+              p.char = chars[Math.floor(Math.random() * chars.length)];
+            }
+          });
+          requestAnimationFrame(draw);
+        }
+        draw();
+      })();
+
+      // Glitch effect trigger on title
+      document.querySelector('h1')?.addEventListener('mouseenter', function() {
+        this.classList.add('glitch');
+        setTimeout(() => this.classList.remove('glitch'), 900);
+      });
+
+      // Confetti system
+      function fireConfetti() {
+        const colors = ['#00fff7', '#00ff41', '#ff00aa', '#ffcc00', '#ff3355'];
+        for (let i = 0; i < 30; i++) {
+          const el = document.createElement('div');
+          el.className = 'confetti-piece';
+          el.style.left = (20 + Math.random() * 60) + '%';
+          el.style.top = '30%';
+          el.style.background = colors[Math.floor(Math.random() * colors.length)];
+          el.style.borderRadius = Math.random() > 0.5 ? '50%' : '0';
+          el.style.animationDuration = (1 + Math.random() * 1) + 's';
+          el.style.animationDelay = (Math.random() * 0.5) + 's';
+          document.body.appendChild(el);
+          setTimeout(() => el.remove(), 2500);
+        }
+      }
+
+      // Screen shake effect
+      function shakeScreen() {
+        const main = document.querySelector('.max-w-4xl');
+        if (main) { main.classList.add('shake'); setTimeout(() => main.classList.remove('shake'), 500); }
+      }
+
+      // XP system
+      function updateXP() {
+        const s = loadScores();
+        const total = s.points || 0;
+        const level = Math.floor(total / 100) + 1;
+        const xpInLevel = total % 100;
+        const section = document.getElementById('xpSection');
+        if (total > 0) section.classList.remove('hidden');
+        document.getElementById('xpLevel').textContent = level;
+        document.getElementById('xpCurrent').textContent = xpInLevel;
+        document.getElementById('xpMax').textContent = 100;
+        document.getElementById('xpFill').style.width = Math.min(xpInLevel, 100) + '%';
+      }
+
+      // Override updateGlobalScore to also update XP
+      var origUpdateScore = updateGlobalScore;
+      updateGlobalScore = function() {
+        origUpdateScore();
+        updateXP();
+      };
       // ---- Init ----
       document.querySelectorAll('.nav-btn').forEach(btn => {
         btn.addEventListener('click', function() { window.navigate(this.dataset.page); });
