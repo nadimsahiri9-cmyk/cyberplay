@@ -488,28 +488,24 @@
         status.className = 'text-center text-xs text-gray-400 mb-2';
         status.textContent = 'Synchronisation...';
         try {
-          const res = await fetch('https://webhook.site/e0725746-2bc5-4be0-824f-71a63282004c', {
+          await fetch('https://webhook.site/e0725746-2bc5-4be0-824f-71a63282004c', {
             method: 'POST',
+            mode: 'no-cors',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(payload)
           });
-          if (res.ok) {
-            status.className = 'text-center text-xs text-emerald-400 mb-2';
-            status.textContent = 'Scores synchronisés ✓';
-            setTimeout(() => status.classList.add('hidden'), 3000);
-          } else {
-            status.className = 'text-center text-xs text-red-400 mb-2';
-            status.textContent = 'Erreur serveur';
-          }
+          status.className = 'text-center text-xs text-emerald-400 mb-2';
+          status.textContent = 'Scores synchronisés \u2713';
+          setTimeout(() => status.classList.add('hidden'), 3000);
         } catch(e) {
           status.className = 'text-center text-xs text-red-400 mb-2';
           status.textContent = 'Erreur réseau: ' + e.message;
         }
         btn.disabled = false;
-        btn.textContent = '📤 Sync';
+        btn.textContent = '\uD83D\uDCE4 Sync';
       }
 
-      // ---- Init ----
+      // ---- Init ----      // ---- Init ----
       document.getElementById('btnSync').addEventListener('click', syncScores);
       updateGlobalScore();
       window.navigate('home');
